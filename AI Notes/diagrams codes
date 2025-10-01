@@ -1,0 +1,86 @@
+1- flow chart for AI :
+flowchart TD
+    A[User Message] --> B[FastAPI Middleware]
+    B --> C[Emotion Detection Layer]
+
+    %% RAG Layer
+    C --> D[RAG Layer:<br>- Embed Query<br>- Vector Search pgvector Postgres<br>- Retrieve Top-k Chunks<br>- Build Prompt with Context]
+
+    %% Controller Layer
+    D --> E[Controller Layer:<br>- Check Similarity Score<br>- Threshold Decision]
+
+    %% Models
+    E -->|Confident| F[NileChat Base Model<br>Deployed via HF Spaces or FastAPI Wrapper on Railway]
+    E -->|Low Confidence| G[Gemini API Pro<br>Cloud Hosted by Google]
+
+    %% Formatting Layer
+    F --> H[Prompting / Formatting Layer:<br>- Inject Style Instructions<br>- Apply Emotion Tone<br>- Unify Language Egyptian Arabic<br>- Re-run through NileChat as Reformatter]
+    G --> H[Prompting / Formatting Layer:<br>- Inject Style Instructions<br>- Apply Emotion Tone<br>- Unify Language Egyptian Arabic<br>- Re-run through NileChat as Reformatter]
+
+    %% Final Answer
+    H --> I[Final Answer Returned to DB/user]
+ _____
+2- user view sequence diagram:
+sequenceDiagram
+    actor User
+    participant ChatWidget as Chat Widget (Frontend)
+    participant FastAPI as FastAPI Middleware
+    participant Emotion as Emotion Detection Layer
+    participant RAG as RAG Retrieval Layer (pgvector on Neon Postgres)
+    participant Controller as Controller Layer
+    participant NileChat as NileChat (Base Model - HF Spaces/Railway)
+    participant Gemini as Gemini API (Fallback Model - Google Cloud)
+    participant Formatter as Formatting Layer (Reformatter)
+    participant DB as Neon Postgres (Chat History + KB VectorDB)
+
+    User ->> ChatWidget: Send message
+    ChatWidget ->> FastAPI: Forward message
+    FastAPI ->> Emotion: Detect emotion from input
+    Emotion -->> FastAPI: Emotion label (e.g. angry, happy)
+
+    FastAPI ->> RAG: Embed query + search KB
+    RAG -->> FastAPI: Return top-k FAQ chunks
+
+    FastAPI ->> Controller: Build prompt with context + emotion
+    Controller ->> Controller: Check similarity score & threshold
+
+    alt High Confidence
+        Controller ->> NileChat: Send prompt + context
+        NileChat -->> Controller: Raw answer
+    else Low Confidence
+        Controller ->> Gemini: Send prompt + context
+        Gemini -->> Controller: Raw answer
+    end
+
+    Controller ->> Formatter: Send raw answer + formating style rules
+    Formatter -->> Controller: Reformatted Egyptian Arabic response
+
+    Controller ->> DB: Save query + response + emotion tag
+    Controller -->> FastAPI: Final formatted answer
+    FastAPI -->> ChatWidget: Return chatbot reply
+    ChatWidget -->> User: Display AI response
+--------
+3- Businees / dashboard sequence diagram:
+sequenceDiagram
+    actor Business
+    participant Dashboard as Dashboard (React.js MVP)
+    participant FastAPI as FastAPI Middleware
+    participant DB as Neon Postgres (KB + Chat History with pgvector)
+
+    Business ->> Dashboard: Login with credentials
+    Dashboard ->> FastAPI: Authenticate request
+    FastAPI ->> DB: Verify business account
+    DB -->> FastAPI: Auth success
+    FastAPI -->> Dashboard: Session token
+
+    Business ->> Dashboard: Upload / Edit FAQs
+    Dashboard ->> FastAPI: Send FAQ entries
+    FastAPI ->> DB: Store KB + generate embeddings
+    DB -->> FastAPI: KB stored + vectors updated
+    FastAPI -->> Dashboard: Success confirmation
+
+    Business ->> Dashboard: View Chat History
+    Dashboard ->> FastAPI: Request chat logs
+    FastAPI ->> DB: Fetch conversations (Q/A + emotions)
+    DB -->> FastAPI: Return chat history
+    FastAPI -->> Dashboard: Show logs to business
