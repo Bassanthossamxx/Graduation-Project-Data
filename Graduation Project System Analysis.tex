@@ -1,0 +1,128 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{margin=1in}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{graphicx}
+\usepackage{float}
+
+\begin{document}
+
+% -------------------------------
+% PROJECT HEADER
+% -------------------------------
+\begin{center}
+    {\Huge \textbf{AI Customer Support Service}}\\[0.8cm]
+
+    {\large \textbf{Supervisors:} Dr. Ahmed Yousry \& Eng. Mahmoud Sobhy}\\[0.3cm]
+
+    {\large Faculty of Computer Science, Benha National University}\\[0.3cm]
+    {\large Academic Year: 2025–2026}\\[0.3cm]
+
+    {\small \textbf{Team Members:} Bassant Hossam, Ahmed Ehab Elattar, Eyad Hesham,\\ 
+    Zeyad Wael, Shahda Mohamed, Toni Ehab}\\[0.8cm]
+\end{center}
+
+% -------------------------------
+\section*{1. Idea Description}
+Our project is an AI-powered, customizable Arabic "Egyptian" customer support platform designed to help SMEs automate their customer service across channels like WhatsApp, Messenger, and web platforms by integrating our service.
+
+\textbf{Main Features:}
+\begin{itemize}[noitemsep]
+    \item Understanding of the Arabic dialect of Egypt.
+    \item Customization \& rule for answers
+    \item Text support
+    \item Voice support (speech-to-text \& text-to-speech).
+    \item Real-time emotion detection.
+    \item Multi-intent handling.
+    \item Integrations: WhatsApp, Messenger, Websites, Apps.
+\end{itemize}
+\section*{2. Problem Statement}
+% TODO: The problem we are solving
+\textbf{Local businesses struggle with:}
+\begin{itemize}[noitemsep]
+    \item providing consistent, 24/7 customer sup-
+port.
+    \item Repetitive questions,
+    \item missed messages
+    \item slow response times
+\end{itemize}
+    
+All this lead to poor customer satisfaction. Existing solutions are often expensive, rigid, or lack authentic local
+language and dialect support.
+
+\section*{3. Proposed Solution}
+% TODO: Our solution and why it is unique
+\textbf{We aim to build a flexible, API-powered Agent/Services system that:}
+\begin{itemize}[noitemsep]
+    \item Uses advanced AI Models \& APIs (Gemini, GPT, Whisper) for text, voice, and emotion-aware
+replies.
+    \item Supports the Egyptian dialect as a primary focus.
+    \item Detects user emotions and adapts responses accordingly.
+    \item Allows businesses to fully customize the bot’s tone, responses, and operating hours.
+\end{itemize}
+
+
+
+% -------------------------------
+\newpage
+\section*{4. System Analysis}
+We are currently in the system analysis phase. The following diagrams represent our vision and planned design :  
+\begin{center}
+    \includegraphics[width=0.5\linewidth]{AI layer.png}\\
+    \textbf{1-Figure:} AI Layer Flow Chart (MVP Implementation)
+\end{center}
+
+\begin{center}
+    \includegraphics[width=0.58\linewidth]{example for sequence diagram.png}
+    \\ Sequence Diagram For User Flow (MVP Implementation)
+\end{center}
+\begin{center}
+    \includegraphics[width=1\linewidth]{sequencebusiness.png}
+    \\ Sequence Diagram for Business Admin
+\end{center}
+% Placeholder for Use Case Diagram
+\begin{center}
+     \includegraphics[width=1\linewidth]{usecase.jpg}
+   \\ Use Case Diagram (MVP Implementation)
+\end{center}
+
+% Placeholder for DFD Level 0
+\begin{center}
+      \includegraphics[width=0.7\linewidth]{DFDlevel0.png}
+    \\ DFD level 0 [context] Diagram (MVP Implementation)
+\end{center}
+
+% % Placeholder for DFD Level 1
+\begin{center}
+    \includegraphics[width=0.7\linewidth]{DFD level1.png}
+    \\ DFD level 1 (User Flow) Diagram (MVP Implementation)
+\end{center}
+
+\begin{center}
+    \includegraphics[width=0.9\linewidth]{DFD level2.png}
+    \\ DFD level 2 (User Flow) Diagram (MVP Implementation)
+\end{center}
+\begin{center}
+    \includegraphics[width=1\linewidth]{DFDlevel1business.png}
+    \\ DFD Level 1 (Business Flow) Diagram
+\end{center}
+\section*{5. Next Steps}
+Our next steps focus on expanding from system analysis to full system design and documentation.  
+We plan to:
+\begin{itemize}
+    \item Design the Entity Relationship Diagram (ERD) for the system.
+    \item Develop System Architecture, Deployment, and Component Diagrams.
+    \item Create detailed documents including:
+        \begin{itemize}
+            \item Functional Requirements Specification (FRS)
+            \item Non-Functional Requirements (NFR)
+            \item High-level and Low-level System Design
+            \item Risk Analysis and Mitigation Plan
+        \end{itemize}
+    \item Review and enhance the current diagrams to include future enhancements.
+    \item Finalize the technical stack and validate chosen tools.
+\end{itemize}
+
+\end{document}
