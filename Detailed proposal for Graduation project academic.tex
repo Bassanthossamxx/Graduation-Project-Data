@@ -1,0 +1,354 @@
+\documentclass[20pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{hyperref}
+\usepackage{tocloft}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{float}
+\geometry{margin=0.9in}
+
+% Improve table of contents appearance (dotted leaders)
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+% Document metadata
+\title{\Huge\bfseries SupportAI --- Smart Chatbot for Businesses}
+\author{Bassant Hossam \and Ahmed Elattar \and Eyad hesham \and Ziad Wael \and Shahda Mohamed \and Toni ihab\\[6pt]
+\small Supervisor: Dr.Ahmed Yousry}
+\date{September 2025}
+
+\begin{document}
+
+% ---------------- COVER PAGE ----------------
+\begin{titlepage}
+  \centering
+  \vspace*{2cm}
+  {\Huge\bfseries AI Customer Support}(Name Under Review)\\[6pt]
+  {\Large Smart Customer Support Service for Businesses}\\[1.5cm]
+
+  {\Large Graduation Project Detailed Proposal}\\[1cm]
+
+  \textbf{Team Members:}\\
+Ahmed Elattar, Bassant Hossam,Eyad Hesham, Zeyad Wael,\\ Shahda Mohamed, Tony Ehab\\[1cm]
+
+  \textbf{Supervisor:} Dr. Ahmed Yousry\\[2cm]
+
+  {\large Faculty of Computer Science}\\
+  {\large Benha National University}\\[1cm]
+
+  \vfill
+\end{titlepage}
+
+% ---------------- TABLE OF CONTENTS ----------------
+\pagenumbering{roman}
+\setcounter{page}{1}
+\tableofcontents
+\clearpage
+\pagenumbering{arabic}
+\setcounter{page}{1}
+
+% ---------------- STRUCTURE ----------------
+
+\section{Idea Description}
+Our project is an AI-powered, customizable customer support platform designed to help
+Egyptian SMEs automate their customer service across channels like WhatsApp, Mes-
+senger, and web platforms.
+
+\textbf{Main Features:}
+\begin{itemize}[noitemsep]
+    \item Understanding of the Arabic Arabic dialect of Egypt.
+    \item Voice support (speech-to-text \& text-to-speech).
+    \item Real-time emotion detection.
+    \item Multi-intent handling.
+    \item Integrations: WhatsApp, Messenger, Websites, Apps.
+\end{itemize}
+
+
+\section{Problem Statement}
+% TODO: The problem we are solving
+\textbf{Local businesses struggle with:}
+\begin{itemize}[noitemsep]
+    \item providing consistent, 24/7 customer sup-
+port.
+    \item Repetitive questions,
+    \item missed messages
+    \item slow response times
+\end{itemize}
+    
+All this lead to poor customer satisfaction. Existing solutions are often expensive, rigid, or lack authentic local
+language and dialect support.
+
+\section{Proposed Solution}
+% TODO: Our solution and why it is unique
+\textbf{We aim to build a flexible, API-powered Agent/Services system that:}
+\begin{itemize}[noitemsep]
+    \item Uses advanced AI Models \& APIs (Gemini, GPT, Whisper) for text, voice, and emotion-aware
+replies.
+    \item Supports the Egyptian dialect as a primary focus.
+    \item Detects user emotions and adapts responses accordingly.
+    \item Allows businesses to fully customize the bot’s tone, responses, and operating hours.
+\end{itemize}
+
+
+\section{Market Research and Competitor Analysis}
+
+This chapter provides an overview of key competitors in the AI customer support and 
+chatbot market in Egypt and the wider MENA region. Several companies already offer 
+communication and AI-driven solutions, each with different focuses such as 
+infrastructure, multichannel support, or conversational intelligence.
+
+For more details on chatbot providers in Egypt, see 
+\href{https://clutch.co/eg/developers/artificial-intelligence/chatbots?utm_source=chatgpt.com}{\textbf{Clutch.co – Egypt Chatbot Providers}}.
+
+
+
+\textbf{Main Competitors:}
+
+\subsection*{WideBot}
+
+WideBot is a Cairo-based AI startup that provides a no-code chatbot building platform 
+with a strong focus on Arabic and local dialects. The company mainly serves SMEs and 
+enterprises in the MENA region by enabling them to build and deploy chatbots across 
+multiple channels without technical expertise.
+
+\textbf{Weaknesses:}
+\begin{itemize}
+    \item Limited advanced AI features such as emotion detection and voice handling.
+    \item Less suited for deep customization.
+    \item Focused more on automation than personalized conversational intelligence.
+\end{itemize}
+
+\textbf{Focus Areas:}
+\begin{itemize}
+    \item No-code chatbot creation.
+    \item Support for Arabic and dialects.
+    \item Multi-channel communication (WhatsApp, Messenger, Web).
+\end{itemize}
+
+\textbf{Main Features:}
+\begin{itemize}
+    \item Drag-and-drop style dashboard for bot building.
+    \item Automation of FAQs and repetitive queries.
+    \item Basic analytics and reporting.
+    \item Multi-channel deployment support.
+\end{itemize}
+
+\subsection*{Cequens}
+
+Cequens is a Middle East--based CPaaS (Communications Platform as a Service) provider 
+that focuses on delivering communication infrastructure and enterprise integration. 
+It mainly provides APIs and dashboards for reliable messaging across multiple channels.
+
+\textbf{Weaknesses:}
+\begin{itemize}
+    \item Limited AI specialization.
+    \item Lack of support for Arabic dialects (e.g., Egyptian).
+    \item No advanced emotion detection or tone customization.
+\end{itemize}
+
+\textbf{Focus Areas:}
+\begin{itemize}
+    \item Reliable communication channels.
+    \item Enterprise integration.
+    \item Infrastructure over conversational AI.
+\end{itemize}
+\textbf{Main Features:}
+\begin{itemize}
+    \item SMS, WhatsApp Business, Voice, Email, and Authentication APIs.
+    \item Omnichannel dashboard for managing customer interactions.
+    \item Real-time reporting and analytics.
+    \item Enterprise-grade infrastructure and scalability.
+\end{itemize}
+
+\subsection*{DXwand}
+
+DXwand is an Egyptian AI startup founded in 2018 that specializes in conversational AI, 
+knowledge mining, and Arabic dialect awareness. With recent Series A funding, the 
+company is expanding its services across MENA, offering advanced text and voice 
+support for enterprises in telecom, healthcare, e-commerce, and government sectors.
+
+\textbf{Weaknesses:}
+\begin{itemize}
+    \item Higher cost and technical complexity.
+    \item Reliance on high-quality training data.
+    \item Privacy and scalability challenges.
+\end{itemize}
+
+\textbf{Focus Areas:}
+\begin{itemize}
+    \item Conversational AI for enterprises.
+    \item Arabic dialect and slang support.
+    \item Knowledge mining and document intelligence.
+\end{itemize}
+
+\textbf{Main Features:}
+\begin{itemize}
+    \item Text and voice conversational AI that understands multiple Arabic dialects.
+    \item Document Intelligence: analyzing documents to build knowledge bases.
+    \item Offline/on-premises deployment for compliance and security.
+    \item Real-time insights and analytics dashboards.
+\end{itemize}
+\section{MVP and Future Enhancements}
+
+\subsection*{Minimum Viable Product (MVP)}
+The MVP will focus on delivering a text-only customer service chatbot that supports both Egyptian Arabic and Franco-Arabic. Key elements include:  
+
+\begin{itemize}
+  \item Integration with an AI model (NileChat as the primary option, with Gemini Pro 2.5 or Qwen Pro as fallbacks) using prompt engineering and response formatting layers.  
+  \item Basic emotion detection with tone adaptation.  
+  \item A chatbot interface with a chat window that can be embedded as a widget on any website.  
+  \item Company knowledge base integration using Retrieval-Augmented Generation (RAG) supported by PostgreSQL with vector extension.  
+  \item Consistent response formatting layer to unify output style across models.  
+\end{itemize}
+
+\subsection*{Future Enhancements}
+Planned enhancements beyond the MVP include:  
+
+\begin{itemize}
+  \item Voice support in Egyptian Arabic (speech-to-text and text-to-speech).  
+  \item An admin dashboard for businesses to manage their knowledge base \& FAQs, customize tone, and view analytics.  
+  \item Advanced emotion detection (if not included in the MVP).  
+  \item Multi-channel integration with Meta services such as WhatsApp, Facebook, and Instagram.  
+  \item Full customization options for businesses, including tone and response management.  
+\end{itemize}
+
+\section{Phases and Roadmap}
+
+The project will be executed across two academic terms.  
+The first term focuses on building and delivering the initial MVP, while the second term extends the system with additional features and demonstrations.
+
+\subsection*{Term 1: MVP Development}
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{System Analysis \& Prototype Design}  
+    -- Gather detailed requirements, refine system analysis, and design a low-fidelity prototype (wireframes, mockups).  
+    -- Validate requirements with supervisor feedback.  
+
+    \item \textbf{MVP Implementation}  
+    -- Develop the core backend (FastAPI + PostgreSQL) and frontend chat widget (React).  
+    -- Integrate basic AI model (NileChat or fallback) with prompt engineering.  
+    -- Add initial emotion detection, RAG integration, and formatting layers.  
+    -- Implement company authentication and chat history storage.  
+
+    \item \textbf{Testing the MVP}  
+    -- Internal testing of core flows (chatbot answering FAQs, emotion detection, RAG retrieval).  
+    -- Fix bugs and validate performance with simple datasets.  
+
+    \item \textbf{Deployment of MVP}  
+    -- Deploy on cloud (Railway / Docker).  
+    -- First demo at the end of Term 1 showing a functional text-based MVP.  
+\end{enumerate}
+
+\subsection*{Term 2: Extended Development and Demo}
+\begin{enumerate}[leftmargin=*]
+    \item \textbf{Feature Expansion}  
+    -- Add advanced features: advanced emotion detection, admin dashboard, voice support (Whisper + TTS), and expanded customization options for businesses.  
+    -- Integrate with WhatsApp, Facebook, and Instagram APIs.  
+
+    \item \textbf{Testing and Refinement}  
+    -- Conduct user testing with SMEs to evaluate new features.  
+    -- Measure accuracy, response quality, and user satisfaction.  
+
+    \item \textbf{Deployment of Enhanced Version}  
+    -- Deploy extended version with added features.  
+    -- Optimize performance and ensure scalability.  
+
+    \item \textbf{Final Demonstration}  
+    -- Deliver a comprehensive demo including both the initial MVP and extended features.  
+    -- Prepare final report and presentation.  
+\end{enumerate}
+
+\subsection*{Summary Timeline}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Weeks 1--3 (Term 1):} System analysis, prototype design, infrastructure setup.  
+    \item \textbf{Weeks 4--8 (Term 1):} MVP development (backend, frontend, AI integration, emotion detection, and RAG).  
+    \item \textbf{Weeks 9--12 (Term 1):} Internal testing, bug fixing, and initial demo deployment.  
+    \item \textbf{Term 2 (Months 5--8):} Feature expansion (dashboard, voice, advanced integrations), second round of testing, deployment, and final demo.  
+\end{itemize}
+
+
+
+\section{Technologies and Team Roles}
+
+\subsection*{Technologies}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Backend:} Python, FastAPI 
+    \item \textbf{Frontend:} React.js (Chatbot interface widget + Dashboard) 
+    \item \textbf{AI/NLP:} NileChat model, Gemini API, Whisper API, HuggingFace Transformers (via API calls), LangChain, LangGraph, Emotion Detection, RAG, Controller Layer 
+    \item \textbf{Database:} PostgreSQL with vector extension (for VectorDB functionality)  
+    \item \textbf{Deployment:} Docker, GitHub CI/CD, Railway Deployment
+    \item \textbf{Integrations:} WhatsApp Business API, Facebook API, Instagram API, Web Chat Widget, Admin Dashboard
+\end{itemize}
+
+\subsection*{Team Roles}
+\begin{itemize}[leftmargin=*]
+    \item \textbf{Backend Developers (3):} Responsible for core APIs, databases, pipelines, and also assisting the AI engineer.  
+    \item \textbf{Frontend Developers (2):} Handle UI/UX, build the chatbot widget and dashboard.  
+    \item \textbf{AI Engineer (1):} Focused on AI/NLP integration, RAG, emotion detection, and orchestration layers.  
+    \item \textbf{DevOps:} Tasks (containerization, CI/CD, monitoring) will be handled by the backend team.  
+\end{itemize}
+
+\subsection*{Team Information}
+
+\textbf{1. Ahmed Ehab Elattar – Project Manager \& Backend Developer}  
+\begin{itemize}
+    \item Email: \href{mailto:ahmeddelattarr@outlook.com}{ahmeddelattarr@outlook.com}
+    \item LinkedIn: \href{https://www.linkedin.com/in/ahmedelattar-tr}{linkedin.com/in/ahmedelattar-tr}
+    \item GitHub: \href{https://github.com/ahmeddelattarr}{github.com/ahmeddelattarr}
+    \item Portfolio: \href{https://www.ahmedelattar.tech}{ahmedelattar.tech}
+    \item CV: \href{https://www.ahmedelattar.tech/resume.pdf}{Ahmed Resume PDF}
+    \item Specialization: Backend, Python, FastAPI, System Architecture, Project Management, AI/NLP, DevOps, PostgreSQL
+\end{itemize}
+\newpage
+\textbf{2. Bassant Hossam Salah Eldeen – Backend Developer}  
+\begin{itemize}
+    \item Email: \href{mailto:bassanthosamm1@outlook.com}{bassanthosamm1@outlook.com}
+    \item LinkedIn: \href{https://www.linkedin.com/in/bassant-hossam-5a4177264}{linkedin.com/in/bassant-hossam}
+    \item GitHub: \href{https://github.com/Bassanthossamxx}{github.com/bassanthossamxx}
+    \item Portfolio: \href{https://bassant-portfolio.vercel.app}{bassant-portfolio.vercel.app}
+    \item CV: \href{https://bassant-portfolio.vercel.app/assets/Bassant_Hossam_CV.pdf}{Bassant Resume PDF}
+    \item Specialization: Backend, Python, FastAPI, PostgreSQL, AI/NLP, DevOps
+\end{itemize}
+
+\textbf{3. Eyad Hesham – Frontend Developer}  
+\begin{itemize}
+    \item Email: \href{mailto:eyadtalha04@gmail.com}{eyadtalha04@gmail.com}
+    \item LinkedIn: \href{https://www.linkedin.com/in/eyadhesham}{linkedin.com/in/eyadhesham}
+    \item GitHub: \href{https://github.com/EyadTalha}{github.com/EyadTalha}
+    \item CV: \href{https://drive.google.com/file/d/1gIWggXZtLGkVX9wEBdzE1umS1afZiNBz/view?usp=sharing}{Eyad Resume PDF}
+    \item Specialization: UI/UX, React.js, Security Implementation, DevOps
+\end{itemize}
+
+\textbf{4. Shahda Mohamed Abotalb – Backend Developer}  
+\begin{itemize}
+    \item Email: \href{mailto:shahdamohamedabotalb@gmail.com}{shahdamohamedabotalb@gmail.com}
+    \item LinkedIn: \href{https://www.linkedin.com/in/shahda-mohamed-178537280}{linkedin.com/in/shahda-mohamed}
+    \item Portfolio: \href{https://shahdamohamed.github.io/my-website}{shahdamohamed.github.io/my-website}
+    \item GitHub: \href{https://github.com/shahdamohamed}{github.com/shahdamohamed}
+    \item CV: \href{https://shahdamohamed.github.io/my-website/assets/resume.pdf}{Shahda Resume PDF}
+    \item Specialization: Backend, Python, FastAPI, AI/NLP, DevOps
+\end{itemize}
+
+\textbf{5. Zead Wael – Frontend Developer}  
+\begin{itemize}
+    \item Email: \href{mailto:zeyadwaelcs@gmail.com}{zeyadwaelcs@gmail.com}
+    \item LinkedIn: \href{https://www.linkedin.com/in/zead-wael}{linkedin.com/in/zead-wael}
+    \item GitHub: \href{https://github.com/ZeadWael}{github.com/ZeadWael}
+    \item CV: \href{https://drive.google.com/drive/folders/1mSTjcvvaDnJasdTxr2x36CddeTrQR5dQ?usp=sharing}{Zead Resume PDF}
+    \item Specialization: UI/UX, React.js, Pen-testing, Security Implementation, DevOps
+\end{itemize}
+
+\textbf{6. Toni Ihab – AI Specialist}  
+\begin{itemize}
+    \item Email: \href{mailto:tony0100512@cs.bnu.edu.eg}{tony0100512@cs.bnu.edu.eg}
+    \item LinkedIn: \href{https://www.linkedin.com/in/toni-ihab/}{linkedin.com/in/toni-ihab}
+    \item GitHub: \href{https://github.com/tokihab}{github.com/tokihab}
+    \item Specialization: AI, ML, NLP, Pen-testing, DevOps 
+\end{itemize}
+\section{Conclusion and Next Steps}
+Our goal is to deliver a product that is highly customizable, tailored to the needs of small Egyptian software companies, and grounded in the local context. To achieve this, we seek your supervision and guidance throughout the development process.  
+
+As for our immediate next steps, we will begin with a detailed system analysis, followed by the development of the MVP version. In parallel, we plan to meet with Eng. Mahmoud Sobhy to confirm him as our TA supervisor.  
+
+\end{document}
