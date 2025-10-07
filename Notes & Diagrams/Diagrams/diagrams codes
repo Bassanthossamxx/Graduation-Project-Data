@@ -84,3 +84,72 @@ sequenceDiagram
     FastAPI ->> DB: Fetch conversations (Q/A + emotions)
     DB -->> FastAPI: Return chat history
     FastAPI -->> Dashboard: Show logs to business
+---
+ERD example :
+erDiagram
+   BUSINESS ||--o{ ADMIN_USER : owns
+   BUSINESS ||--o{ END_USER : serves
+   BUSINESS ||--o{ KB_ENTRY : manages
+   BUSINESS ||--o{ CONVERSATION : tracks
+   BUSINESS ||--o{ ANALYTICS_METRIC : generates
+
+   END_USER ||--o{ CONVERSATION : starts
+   CONVERSATION ||--o{ MESSAGE : contains
+
+   BUSINESS {
+       varchar business_id PK
+       varchar name
+       varchar email
+       varchar auth_token
+       json custom_tone_settings
+       varchar operating_hours
+   }
+
+   ADMIN_USER {
+       varchar admin_id PK
+       varchar business_id FK
+       varchar email
+       varchar password_hash
+       varchar role
+   }
+
+   END_USER {
+       varchar user_id PK
+       varchar business_id FK
+       varchar channel_type "WhatsApp|Web|Messenger"
+       varchar channel_user_id "Platform-specific ID"
+   }
+
+   CONVERSATION {
+       varchar conversation_id PK
+       varchar business_id FK
+       varchar user_id FK
+       timestamp start_time
+       varchar status "active|closed|manual_takeover"
+   }
+
+   MESSAGE {
+       varchar message_id PK
+       varchar conversation_id FK
+       varchar sender_type "user|bot|admin"
+       timestamp timestamp
+       text text_content
+       varchar emotion_tag
+       decimal response_score
+   }
+
+   KB_ENTRY {
+       varchar kb_entry_id PK
+       varchar business_id FK
+       text content_text
+       varchar document_type
+       text vector_embedding "Stored in pgvector"
+   }
+
+   ANALYTICS_METRIC {
+       varchar metric_id PK
+       varchar business_id FK
+       varchar metric_name
+       decimal metric_value
+       date date
+   }
