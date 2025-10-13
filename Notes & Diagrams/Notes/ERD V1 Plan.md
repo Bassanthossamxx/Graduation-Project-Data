@@ -2,6 +2,7 @@
 ## **Overview**
 The AI Customer Support Egyptian Service enables Business to integrate a smart AI chatbot into their websites or apps through an embeddable web widget.
  It supports text (and future voice) communication in Egyptian Arabic, allowing businesses to automate responses based on their knowledge base, while admins can manage settings, analyze reports, and respond manually when needed.
+ #### still normaliztion it 
 
 ---
 
