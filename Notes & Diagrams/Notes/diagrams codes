@@ -1,0 +1,332 @@
+1- flow chart for AI :
+flowchart TD
+    A[User Message] --> B[FastAPI Middleware]
+    B --> C[Emotion Detection Layer]
+
+    %% RAG Layer
+    C --> D[RAG Layer:<br>- Embed Query<br>- Vector Search pgvector Postgres<br>- Retrieve Top-k Chunks<br>- Build Prompt with Context]
+
+    %% Controller Layer
+    D --> E[Controller Layer:<br>- Check Similarity Score<br>- Threshold Decision]
+
+    %% Models
+    E -->|Confident| F[NileChat Base Model<br>Deployed via HF Spaces or FastAPI Wrapper on Railway]
+    E -->|Low Confidence| G[Gemini API Pro<br>Cloud Hosted by Google]
+
+    %% Formatting Layer
+    F --> H[Prompting / Formatting Layer:<br>- Inject Style Instructions<br>- Apply Emotion Tone<br>- Unify Language Egyptian Arabic<br>- Re-run through NileChat as Reformatter]
+    G --> H[Prompting / Formatting Layer:<br>- Inject Style Instructions<br>- Apply Emotion Tone<br>- Unify Language Egyptian Arabic<br>- Re-run through NileChat as Reformatter]
+
+    %% Final Answer
+    H --> I[Final Answer Returned to DB/user]
+ _____
+2- user view sequence diagram:
+sequenceDiagram
+    actor User
+    participant ChatWidget as Chat Widget (Frontend)
+    participant FastAPI as FastAPI Middleware
+    participant Emotion as Emotion Detection Layer
+    participant RAG as RAG Retrieval Layer (pgvector on Neon Postgres)
+    participant Controller as Controller Layer
+    participant NileChat as NileChat (Base Model - HF Spaces/Railway)
+    participant Gemini as Gemini API (Fallback Model - Google Cloud)
+    participant Formatter as Formatting Layer (Reformatter)
+    participant DB as Neon Postgres (Chat History + KB VectorDB)
+
+    User ->> ChatWidget: Send message
+    ChatWidget ->> FastAPI: Forward message
+    FastAPI ->> Emotion: Detect emotion from input
+    Emotion -->> FastAPI: Emotion label (e.g. angry, happy)
+
+    FastAPI ->> RAG: Embed query + search KB
+    RAG -->> FastAPI: Return top-k FAQ chunks
+
+    FastAPI ->> Controller: Build prompt with context + emotion
+    Controller ->> Controller: Check similarity score & threshold
+
+    alt High Confidence
+        Controller ->> NileChat: Send prompt + context
+        NileChat -->> Controller: Raw answer
+    else Low Confidence
+        Controller ->> Gemini: Send prompt + context
+        Gemini -->> Controller: Raw answer
+    end
+
+    Controller ->> Formatter: Send raw answer + formating style rules
+    Formatter -->> Controller: Reformatted Egyptian Arabic response
+
+    Controller ->> DB: Save query + response + emotion tag
+    Controller -->> FastAPI: Final formatted answer
+    FastAPI -->> ChatWidget: Return chatbot reply
+    ChatWidget -->> User: Display AI response
+--------
+3- Businees / dashboard sequence diagram:
+sequenceDiagram
+    actor Business
+    participant Dashboard as Dashboard (React.js MVP)
+    participant FastAPI as FastAPI Middleware
+    participant DB as Neon Postgres (KB + Chat History with pgvector)
+
+    Business ->> Dashboard: Login with credentials
+    Dashboard ->> FastAPI: Authenticate request
+    FastAPI ->> DB: Verify business account
+    DB -->> FastAPI: Auth success
+    FastAPI -->> Dashboard: Session token
+
+    Business ->> Dashboard: Upload / Edit FAQs
+    Dashboard ->> FastAPI: Send FAQ entries
+    FastAPI ->> DB: Store KB + generate embeddings
+    DB -->> FastAPI: KB stored + vectors updated
+    FastAPI -->> Dashboard: Success confirmation
+
+    Business ->> Dashboard: View Chat History
+    Dashboard ->> FastAPI: Request chat logs
+    FastAPI ->> DB: Fetch conversations (Q/A + emotions)
+    DB -->> FastAPI: Return chat history
+    FastAPI -->> Dashboard: Show logs to business
+---
+4- ERD V2 "DBdiagram":
+
+Table Business {
+  id uuid [pk]
+  name varchar
+  email varchar
+  description text
+  industry varchar
+  domain_url varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table BusinessSetting {
+  id uuid [pk]
+  bot_name varchar
+  tone_style varchar
+  auto_reply_enabled boolean
+  operating_hour_start time
+  operating_hour_end time
+  business_id uuid [ref: > Business.id, unique] // 1-1 Relationship
+  created_at timestamp
+}
+
+Table BusinessAuth {
+  id uuid [pk]
+  business_id uuid [ref: > Business.id]
+  api_key varchar
+  is_active boolean
+  created_at timestamp
+}
+
+Table BusinessAdmin {
+  id uuid [pk]
+  name varchar
+  email varchar [unique]
+  password varchar
+  role varchar
+  business_id uuid [ref: > Business.id]
+  created_at timestamp
+}
+
+Table EndUser {
+  id uuid [pk]
+  business_id uuid [ref: > Business.id]
+  external_id varchar
+  name varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table ChatSession {
+  id uuid [pk]
+  business_id uuid [ref: > Business.id]
+  end_user_id uuid [ref: > EndUser.id]
+  session_token varchar [unique]
+  status varchar
+  started_at timestamp
+  ended_at timestamp
+  feedback_id uuid // will be linked below (manual 1-1)
+}
+
+Table ChatMessage {
+  id uuid [pk]
+  session_id uuid [ref: > ChatSession.id]
+  sender_type varchar
+  content text
+  ai_model_used varchar
+  emotion_detected varchar
+  time timestamp
+}
+
+Table Feedback {
+  id uuid [pk]
+  enduser_id uuid [ref: > EndUser.id]
+  session_id uuid [ref: > ChatSession.id]
+  rating int
+  comment text
+  submitted_at timestamp
+}
+
+Table KnowledgeBase {
+  id uuid [pk]
+  business_id uuid [ref: > Business.id]
+  base_type varchar
+  content_json json
+  file_url varchar
+  file_type varchar
+  embedding_vector vector
+  created_at timestamp
+}
+
+Table AnalyticsReport {
+  id uuid [pk]
+  business_id uuid [ref: > Business.id]
+  total_chats int
+  avg_response_time float
+  user_satisfaction float
+  report_period_start date
+  report_period_end date
+  generated_at timestamp
+}
+
+Table VoiceInteraction {
+  id uuid [pk]
+  session_id uuid [ref: > ChatSession.id]
+  audio_file_url varchar
+  transcription_text text
+  detected_emotion varchar
+  created_at timestamp
+}
+Ref: ChatSession.feedback_id - Feedback.id // 1-1 manual link
+
+5- ERD V2 "earser":
+// title
+title Kalamna - AI Customer Support Egyptian Service
+
+// tables
+businesses [icon: briefcase, color: yellow]{
+  id uuid pk
+  name string
+  email string
+  description text
+  industry string
+  domain_url string
+  created_at timestamp
+  updated_at timestamp
+}
+
+business_settings [icon: settings, color: orange]{
+  id uuid pk
+  bot_name string
+  tone_style string
+  auto_reply_enabled boolean
+  operating_hour_start time
+  operating_hour_end time
+  business_id uuid
+  created_at timestamp
+}
+
+business_auths [icon: key, color: blue]{
+  id uuid pk
+  business_id uuid
+  api_key string
+  is_active boolean
+  created_at timestamp
+}
+
+business_admins [icon: user, color: purple]{
+  id uuid pk
+  name string
+  email string
+  password string
+  role string
+  business_id uuid
+  created_at timestamp
+}
+
+end_users [icon: users, color: teal]{
+  id uuid pk
+  business_id uuid
+  external_id string
+  name string
+  created_at timestamp
+  updated_at timestamp
+}
+
+chat_sessions [icon: message-circle, color: green]{
+  id uuid pk
+  business_id uuid
+  end_user_id uuid
+  session_token string
+  status string
+  started_at timestamp
+  ended_at timestamp
+  feedback_id uuid
+}
+
+chat_messages [icon: message-square, color: lightblue]{
+  id uuid pk
+  session_id uuid
+  sender_type string
+  content text
+  ai_model_used string
+  emotion_detected string
+  time timestamp
+}
+
+feedbacks [icon: thumbs-up, color: pink]{
+  id uuid pk
+  enduser_id uuid
+  session_id uuid
+  rating integer
+  comment text
+  submitted_at timestamp
+}
+
+knowledge_bases [icon: book-open, color: brown]{
+  id uuid pk
+  business_id uuid
+  base_type string
+  content_json json
+  file_url string
+  file_type string
+  embedding_vector vector
+  created_at timestamp
+}
+
+analytics_reports [icon: bar-chart-2, color: red]{
+  id uuid pk
+  business_id uuid
+  total_chats integer
+  avg_response_time float
+  user_satisfaction float
+  report_period_start date
+  report_period_end date
+  generated_at timestamp
+}
+
+voice_interactions [icon: mic, color: gray]{
+  id uuid pk
+  session_id uuid
+  audio_file_url string
+  transcription_text text
+  detected_emotion string
+  created_at timestamp
+}
+
+// relationships
+businesses.id > business_admins.business_id
+businesses.id - business_settings.business_id
+businesses.id > business_auths.business_id
+businesses.id > end_users.business_id
+businesses.id > knowledge_bases.business_id
+businesses.id > analytics_reports.business_id
+
+end_users.id > chat_sessions.end_user_id
+businesses.id > chat_sessions.business_id
+
+chat_sessions.id > chat_messages.session_id
+chat_sessions.id - feedbacks.session_id
+chat_sessions.id > voice_interactions.session_id
+
+end_users.id > feedbacks.enduser_id
+chat_sessions.feedback_id - feedbacks.id
