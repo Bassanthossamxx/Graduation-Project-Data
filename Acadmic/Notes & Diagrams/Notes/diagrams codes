@@ -24,6 +24,7 @@ flowchart TD
 sequenceDiagram
     actor User
     participant ChatWidget as Chat Widget (Frontend)
+    participant Voice as Voice Layer (STT/TTS - Whisper API)
     participant FastAPI as FastAPI Middleware
     participant Emotion as Emotion Detection Layer
     participant RAG as RAG Retrieval Layer (pgvector on Neon Postgres)
@@ -33,14 +34,25 @@ sequenceDiagram
     participant Formatter as Formatting Layer (Reformatter)
     participant DB as Neon Postgres (Chat History + KB VectorDB)
 
-    User ->> ChatWidget: Send message
-    ChatWidget ->> FastAPI: Forward message
-    FastAPI ->> Emotion: Detect emotion from input
-    Emotion -->> FastAPI: Emotion label (e.g. angry, happy)
+    %% --- USER INPUT ---
+    alt User sends text
+        User ->> ChatWidget: Type message
+        ChatWidget ->> FastAPI: Send text message
+    else User sends voice
+        User ->> ChatWidget: Speak voice message
+        ChatWidget ->> Voice: Send audio input
+        Voice ->> Voice: Convert Speech to Text (STT - Whisper)
+        Voice -->> ChatWidget: Transcribed text
+        ChatWidget ->> FastAPI: Forward transcribed text
+    end
 
+    %% --- EMOTION & CONTEXT ---
+    FastAPI ->> Emotion: Detect emotion from input text
+    Emotion -->> FastAPI: Emotion label (e.g. angry, happy)
     FastAPI ->> RAG: Embed query + search KB
     RAG -->> FastAPI: Return top-k FAQ chunks
 
+    %% --- CONTROLLER & MODEL SELECTION ---
     FastAPI ->> Controller: Build prompt with context + emotion
     Controller ->> Controller: Check similarity score & threshold
 
@@ -52,38 +64,88 @@ sequenceDiagram
         Gemini -->> Controller: Raw answer
     end
 
-    Controller ->> Formatter: Send raw answer + formating style rules
+    %% --- FORMAT & SAVE ---
+    Controller ->> Formatter: Send raw answer + formatting style rules
     Formatter -->> Controller: Reformatted Egyptian Arabic response
-
     Controller ->> DB: Save query + response + emotion tag
-    Controller -->> FastAPI: Final formatted answer
-    FastAPI -->> ChatWidget: Return chatbot reply
-    ChatWidget -->> User: Display AI response
+    Controller -->> FastAPI: Final formatted text response
+
+    %% --- OUTPUT MODE ---
+    alt User requested voice reply
+        FastAPI ->> Voice: Convert Text to Speech (TTS)
+        Voice -->> ChatWidget: Audio reply (voice output)
+        ChatWidget -->> User: Play AI voice response
+    else Text-only mode
+        FastAPI -->> ChatWidget: Return text reply
+        ChatWidget -->> User: Display AI text response
+    end
 --------
 3- Businees / dashboard sequence diagram:
 sequenceDiagram
     actor Business
     participant Dashboard as Dashboard (React.js MVP)
     participant FastAPI as FastAPI Middleware
-    participant DB as Neon Postgres (KB + Chat History with pgvector)
+    participant DB as Neon Postgres (Business Data + KB + Chat History + Analytics)
+    participant Embed as Embedding Generator (LangChain / Vector Engine)
+    participant Analytics as Analytics Service
 
-    Business ->> Dashboard: Login with credentials
-    Dashboard ->> FastAPI: Authenticate request
-    FastAPI ->> DB: Verify business account
-    DB -->> FastAPI: Auth success
-    FastAPI -->> Dashboard: Session token
+    %% --- REGISTRATION FLOW ---
+    Business ->> Dashboard: Register new business account
+    Dashboard ->> FastAPI: Send registration form (business info + admin credentials)
+    FastAPI ->> DB: Create business record and admin account
+    DB -->> FastAPI: Registration successful
+    FastAPI -->> Dashboard: Confirm account created
 
-    Business ->> Dashboard: Upload / Edit FAQs
-    Dashboard ->> FastAPI: Send FAQ entries
-    FastAPI ->> DB: Store KB + generate embeddings
-    DB -->> FastAPI: KB stored + vectors updated
-    FastAPI -->> Dashboard: Success confirmation
+    %% --- LOGIN FLOW ---
+    Business ->> Dashboard: Login with email and password
+    Dashboard ->> FastAPI: Send credentials for authentication
+    FastAPI ->> DB: Verify business admin credentials
+    DB -->> FastAPI: Authentication successful
+    FastAPI -->> Dashboard: Return session token and business info
 
-    Business ->> Dashboard: View Chat History
+    %% --- SETTINGS MANAGEMENT ---
+    Business ->> Dashboard: Update bot tone, operating hours, or auto-reply mode
+    Dashboard ->> FastAPI: Send updated settings
+    FastAPI ->> DB: Update business settings record
+    DB -->> FastAPI: Settings saved successfully
+    FastAPI -->> Dashboard: Confirm settings updated
+
+    %% --- KNOWLEDGE BASE MANAGEMENT ---
+    alt Upload Knowledge Base File
+        Business ->> Dashboard: Upload file (documents or datasets)
+        Dashboard ->> FastAPI: Send file for processing
+        FastAPI ->> DB: Store file metadata
+        FastAPI ->> Embed: Generate embeddings for file content
+        Embed -->> FastAPI: Return vectorized data
+        FastAPI ->> DB: Save embeddings into Knowledge Base
+        DB -->> FastAPI: Storage successful
+        FastAPI -->> Dashboard: Confirm upload complete
+    else Manual FAQ Entry
+        Business ->> Dashboard: Add or edit FAQ entries
+        Dashboard ->> FastAPI: Send new or edited FAQ data
+        FastAPI ->> Embed: Generate embeddings for FAQ text
+        Embed -->> FastAPI: Return embedding vectors
+        FastAPI ->> DB: Store updated FAQs with embeddings
+        DB -->> FastAPI: Data stored successfully
+        FastAPI -->> Dashboard: Confirm FAQs updated
+    end
+
+    %% --- CHAT HISTORY REVIEW ---
+    Business ->> Dashboard: View chat conversations with customers
     Dashboard ->> FastAPI: Request chat logs
-    FastAPI ->> DB: Fetch conversations (Q/A + emotions)
-    DB -->> FastAPI: Return chat history
-    FastAPI -->> Dashboard: Show logs to business
+    FastAPI ->> DB: Retrieve chat sessions, messages, and detected emotions
+    DB -->> FastAPI: Return conversation history
+    FastAPI -->> Dashboard: Display full chat history
+
+    %% --- ANALYTICS VIEW ---
+    Business ->> Dashboard: View analytics and reports
+    Dashboard ->> FastAPI: Request analytics data
+    FastAPI ->> Analytics: Generate summary metrics
+    Analytics ->> DB: Fetch chat and feedback data
+    DB -->> Analytics: Provide aggregated data
+    Analytics -->> FastAPI: Return computed analytics
+    FastAPI -->> Dashboard: Display charts and performance insights
+
 ---
 4- ERD V2 "DBdiagram":
 
