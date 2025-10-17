@@ -148,8 +148,7 @@ sequenceDiagram
 
 ---
 4- ERD V2 "DBdiagram":
-
-Table Business {
+Table Businesses {
   id uuid [pk]
   name varchar
   email varchar
@@ -160,77 +159,79 @@ Table Business {
   updated_at timestamp
 }
 
-Table BusinessSetting {
+Table Configurations {
   id uuid [pk]
+  business_id uuid [ref: > Businesses.id, unique]
   bot_name varchar
-  tone_style varchar
+  tone_style Varchar_choices
   auto_reply_enabled boolean
   operating_hour_start time
   operating_hour_end time
-  business_id uuid [ref: > Business.id, unique] // 1-1 Relationship
   created_at timestamp
+  updated_at timestamp
 }
 
-Table BusinessAuth {
+Table Credentials {
   id uuid [pk]
-  business_id uuid [ref: > Business.id]
+  business_id uuid [ref: > Businesses.id]
   api_key varchar
   is_active boolean
   created_at timestamp
 }
 
-Table BusinessAdmin {
+Table Admins {
   id uuid [pk]
-  name varchar
+  business_id uuid [ref: > Businesses.id]
+  full_name varchar
   email varchar [unique]
-  password varchar
-  role varchar
-  business_id uuid [ref: > Business.id]
+  password password
+  role Varchar_choices
   created_at timestamp
+  updated_at timestamp
 }
 
-Table EndUser {
+Table EndUsers {
   id uuid [pk]
-  business_id uuid [ref: > Business.id]
+  business_id uuid [ref: > Businesses.id]
   external_id varchar
   name varchar
   created_at timestamp
   updated_at timestamp
 }
 
-Table ChatSession {
+Table ChatSessions {
   id uuid [pk]
-  business_id uuid [ref: > Business.id]
-  end_user_id uuid [ref: > EndUser.id]
+  business_id uuid [ref: > Businesses.id]
+  end_user_id uuid [ref: > EndUsers.id]
   session_token varchar [unique]
   status varchar
   started_at timestamp
   ended_at timestamp
-  feedback_id uuid // will be linked below (manual 1-1)
+  feedback_id uuid
 }
 
-Table ChatMessage {
+Table ChatMessages {
   id uuid [pk]
-  session_id uuid [ref: > ChatSession.id]
+  session_id uuid [ref: > ChatSessions.id]
   sender_type varchar
   content text
-  ai_model_used varchar
+  ai_model_used Varchar_choices
   emotion_detected varchar
-  time timestamp
+  created_at timestamp
 }
 
-Table Feedback {
+Table Feedbacks {
   id uuid [pk]
-  enduser_id uuid [ref: > EndUser.id]
-  session_id uuid [ref: > ChatSession.id]
+  end_user_id uuid [ref: > EndUsers.id]
+  session_id uuid [ref: > ChatSessions.id]
   rating int
   comment text
   submitted_at timestamp
 }
 
-Table KnowledgeBase {
+Table KnowledgeBases {
   id uuid [pk]
-  business_id uuid [ref: > Business.id]
+  business_id uuid [ref: > Businesses.id]
   base_type varchar
   content_json json
   file_url varchar
@@ -239,9 +240,9 @@ Table KnowledgeBase {
   created_at timestamp
 }
 
-Table AnalyticsReport {
+Table AnalyticsReports {
   id uuid [pk]
-  business_id uuid [ref: > Business.id]
+  business_id uuid [ref: > Businesses.id]
   total_chats int
   avg_response_time float
   user_satisfaction float
@@ -250,145 +251,15 @@ Table AnalyticsReport {
   generated_at timestamp
 }
 
-Table VoiceInteraction {
+Table VoiceMessages {
   id uuid [pk]
-  session_id uuid [ref: > ChatSession.id]
+  session_id uuid [ref: > ChatSessions.id]
   audio_file_url varchar
-  transcription_text text
-  detected_emotion varchar
-  created_at timestamp
-}
-Ref: ChatSession.feedback_id - Feedback.id // 1-1 manual link
-
-5- ERD V2 "earser":
-// title
-title Kalamna - AI Customer Support Egyptian Service
-
-// tables
-businesses [icon: briefcase, color: yellow]{
-  id uuid pk
-  name string
-  email string
-  description text
-  industry string
-  domain_url string
-  created_at timestamp
-  updated_at timestamp
-}
-
-business_settings [icon: settings, color: orange]{
-  id uuid pk
-  bot_name string
-  tone_style string
-  auto_reply_enabled boolean
-  operating_hour_start time
-  operating_hour_end time
-  business_id uuid
-  created_at timestamp
-}
-
-business_auths [icon: key, color: blue]{
-  id uuid pk
-  business_id uuid
-  api_key string
-  is_active boolean
-  created_at timestamp
-}
-
-business_admins [icon: user, color: purple]{
-  id uuid pk
-  name string
-  email string
-  password string
-  role string
-  business_id uuid
-  created_at timestamp
-}
-
-end_users [icon: users, color: teal]{
-  id uuid pk
-  business_id uuid
-  external_id string
-  name string
-  created_at timestamp
-  updated_at timestamp
-}
-
-chat_sessions [icon: message-circle, color: green]{
-  id uuid pk
-  business_id uuid
-  end_user_id uuid
-  session_token string
-  status string
-  started_at timestamp
-  ended_at timestamp
-  feedback_id uuid
-}
-
-chat_messages [icon: message-square, color: lightblue]{
-  id uuid pk
-  session_id uuid
-  sender_type string
   content text
-  ai_model_used string
-  emotion_detected string
-  time timestamp
-}
-
-feedbacks [icon: thumbs-up, color: pink]{
-  id uuid pk
-  enduser_id uuid
-  session_id uuid
-  rating integer
-  comment text
-  submitted_at timestamp
-}
-
-knowledge_bases [icon: book-open, color: brown]{
-  id uuid pk
-  business_id uuid
-  base_type string
-  content_json json
-  file_url string
-  file_type string
-  embedding_vector vector
+  detected_emotion varchar
+  sender_type varchar
+  ai_model_used Varchar_choices
   created_at timestamp
 }
 
-analytics_reports [icon: bar-chart-2, color: red]{
-  id uuid pk
-  business_id uuid
-  total_chats integer
-  avg_response_time float
-  user_satisfaction float
-  report_period_start date
-  report_period_end date
-  generated_at timestamp
-}
-
-voice_interactions [icon: mic, color: gray]{
-  id uuid pk
-  session_id uuid
-  audio_file_url string
-  transcription_text text
-  detected_emotion string
-  created_at timestamp
-}
-
-// relationships
-businesses.id > business_admins.business_id
-businesses.id - business_settings.business_id
-businesses.id > business_auths.business_id
-businesses.id > end_users.business_id
-businesses.id > knowledge_bases.business_id
-businesses.id > analytics_reports.business_id
-
-end_users.id > chat_sessions.end_user_id
-businesses.id > chat_sessions.business_id
-
-chat_sessions.id > chat_messages.session_id
-chat_sessions.id - feedbacks.session_id
-chat_sessions.id > voice_interactions.session_id
-
-end_users.id > feedbacks.enduser_id
-chat_sessions.feedback_id - feedbacks.id
+Ref: ChatSessions.feedback_id - Feedbacks.id // 1-1 manual link
